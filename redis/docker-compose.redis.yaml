@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  redis-cluster:
+    environment:
+      PASSWORD: redis
+    container_name: redis-cluster
+
+    build:
+      context: .
+      args:
+        redis_version: '6.0.10'
+
+    hostname: redis-cluster-server
+
+    ports:
+      - 7000:7000
+      - 7001:7001
+      - 7002:7002
+      - 7003:7003
+      - 7004:7004
+      - 7005:7005
