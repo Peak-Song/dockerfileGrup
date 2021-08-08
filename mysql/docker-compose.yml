@@ -1,0 +1,28 @@
+version: '3.1'
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    hostname: mysql
+    restart: always
+    volumes:
+      - "/home/peaksong/docker_vol/mysql/my.cnf:/etc/mysql/my.cnf"
+      - "/home/peaksong/docker_vol/mysql/data:/var/lib/mysql"
+      - "/home/peaksong/docker_vol/mysql/files:/var/lib/mysql-files"
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "Lucky2021"
+    ports:
+      - "3306:3306"
+
+    networks:
+      spring:
+        ipv4_address: 172.22.0.3
+
+networks:
+  spring:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+          gateway: 172.22.0.1
