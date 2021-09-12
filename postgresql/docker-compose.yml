@@ -1,0 +1,35 @@
+version: '3.1'
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    hostname: postgres
+    restart: always
+    privileged: true
+    volumes:
+      - "/home/peaksong/docker_vol/postgresql/data:/var/lib/postgresql/data/pgdata"
+    environment:
+      POSTGRES_PASSWORD: "Lucky2021"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "15432:5432"
+
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.6
+
+  adminer:
+    depends_on:
+      - postgres
+    image: adminer
+    container_name: postgres-adminer
+    restart: always
+    ports:
+      - "10080:8080"
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.7
+
+networks:
+  mysql_spring:
+    external: true

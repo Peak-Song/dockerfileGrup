@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  redis:
+    image: "docker.io/library/redis"
+    container_name: redis
+    hostname: redis
+    restart: always
+    command:
+      /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf "
+    volumes:
+      - /home/peaksong/docker_vol/redis/data:/data
+      - /home/peaksong/docker_vol/redis/redis.conf:/usr/local/etc/redis/redis.conf:rw
+    ports:
+      - "6379:6379"
+
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.5
+
+networks:
+  mysql_spring:
+    external: true
