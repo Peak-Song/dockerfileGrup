@@ -1,0 +1,7 @@
+http.host: "0.0.0.0"
+path.config: /usr/share/logstash/config/conf.d/*.conf
+path.logs: /usr/share/logstash/logs
+
+xpack:
+  monitoring:
+    enabled: true

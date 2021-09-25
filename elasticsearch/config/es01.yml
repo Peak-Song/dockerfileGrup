@@ -1,0 +1,20 @@
+cluster:
+  name: "docker-cluster"
+
+node:
+  master: true
+
+network.host: 0.0.0.0
+
+
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+
+
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: cert/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: cert/elastic-certificates.p12
+
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+http.cors.allow-headers: "Authorization"

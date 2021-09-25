@@ -1,0 +1,3 @@
+FROM elasticsearch:7.12.1
+ADD elasticsearch-analysis-ik-7.12.1 /usr/share/elasticsearch/plugins/elasticsearch-analysis-ik
+ADD elastic-certificates.p12 /usr/share/elasticsearch/config/cert/elastic-certificates.p12

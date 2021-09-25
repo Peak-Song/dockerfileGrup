@@ -1,0 +1,120 @@
+version: '3.8'
+services:
+  es01:
+    image: elasticsearch-ik:7.12.1
+    container_name: es01
+    restart: always
+    environment:
+      - 'node.name=es01'
+      - 'cluster.name=es-docker-cluster'
+      - 'discovery.seed_hosts=es02,es03'
+      - 'cluster.initial_master_nodes=es01,es02,es03'
+      - 'bootstrap.memory_lock=true'
+      - 'ES_JAVA_OPTS=-Xms1g -Xmx1g'
+      - 'ELASTIC_USERNAME=elastic'
+      - 'ELASTIC_PASSWORD=DkIedPPSCb'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    hostname: es01
+    volumes:
+#      - /home/peaksong/docker_vol/es-cluster/es01/data:/usr/share/elasticsearch/data
+      - /home/peaksong/docker_vol/es-cluster/es01.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9201:9200"
+      - "9301:9300"
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.201
+
+  es02:
+    image: elasticsearch-ik:7.12.1
+    container_name: es02
+    restart: always
+    environment:
+      - 'node.name=es02'
+      - 'cluster.name=es-docker-cluster'
+      - 'discovery.seed_hosts=es01,es03'
+      - 'cluster.initial_master_nodes=es01,es02,es03'
+      - 'bootstrap.memory_lock=true'
+      - 'ES_JAVA_OPTS=-Xms1g -Xmx1g'
+      - 'ELASTIC_USERNAME=elastic'
+      - 'ELASTIC_PASSWORD=DkIedPPSCb'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    hostname: es02
+    volumes:
+#      - /home/peaksong/docker_vol/es-cluster/es02/data:/usr/share/elasticsearch/data
+      - /home/peaksong/docker_vol/es-cluster/es02.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9202:9200"
+      - "9302:9300"
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.202
+
+  es03:
+    image: elasticsearch-ik:7.12.1
+    container_name: es03
+    restart: always
+    environment:
+      - 'node.name=es03'
+      - 'cluster.name=es-docker-cluster'
+      - 'discovery.seed_hosts=es01,es02'
+      - 'cluster.initial_master_nodes=es01,es02,es03'
+      - 'bootstrap.memory_lock=true'
+      - 'ES_JAVA_OPTS=-Xms1g -Xmx1g'
+      - 'ELASTIC_USERNAME=elastic'
+      - 'ELASTIC_PASSWORD=DkIedPPSCb'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+#      - /home/peaksong/docker_vol/es-cluster/es03/data:/usr/share/elasticsearch/data
+      - /home/peaksong/docker_vol/es-cluster/es03.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9203:9200"
+      - "9303:9300"
+    hostname: es03
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.203
+
+  kibana:
+    image: kibana:7.12.1
+    container_name: kibana
+    volumes:
+      - /home/peaksong/docker_vol/es-cluster/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - "5601:5601"
+    depends_on:
+      - es03
+      - es02
+      - es01
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.204
+
+  logstash:
+    image: logstash:7.12.1
+    container_name: logstash
+    volumes:
+      - /home/peaksong/docker_vol/es-cluster/logstash.yml:/usr/share/logstash/pipeline/logstash.yml
+    depends_on:
+      - es03
+      - es02
+      - es01
+    ports:
+      - "5604:5604"
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.205
+
+
+networks:
+  mysql_spring:
+    external: true

@@ -1,0 +1,15 @@
+server.name: kibana
+server.host: "0"
+
+i18n.locale: zh-CN
+
+#xpack.encryptedSavedObjects.encryptionKey: encryptedSavedObjects12345678909876543210
+#xpack.security.encryptionKey: encryptionKeysecurity12345678909876543210
+#xpack.reporting.encryptionKey: encryptionKeyreporting12345678909876543210
+
+
+monitoring.ui.container.elasticsearch.enabled: true
+elasticsearch.hosts: [ "http://172.22.0.201:9200", "http://172.22.0.202:9200", "http://172.22.0.203:9200" ]
+
+elasticsearch.username: "elastic"  # 超级用户
+elasticsearch.password: "DkIedPPSCb" # 密码
