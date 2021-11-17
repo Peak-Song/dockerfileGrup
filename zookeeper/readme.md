@@ -26,7 +26,7 @@ docker-compose up -d
   单个客户端与单台zk服务器之间的连接数的限制，是ip级别的，如果设置为0，那么表明不作任何限制。
 
 ### 参考链接
-- [容器化系列 - Zookeeper启动和配置 on Docker](https://cloud.tencent.com/developer/article/1360521)  
+- [Docker下安装zookeeper（单机 & 集群）](https://www.cnblogs.com/LUA123/p/11428113.html)  
 - [使用 Docker 一步搞定 ZooKeeper 集群的搭建](https://www.cnblogs.com/kingkoo/p/8732448.html)  
 - [Volume binding using docker compose on Windows](https://stackoverflow.com/questions/41334021/volume-binding-using-docker-compose-on-windows)  
 - [官方dockerfile参考](https://github.com/31z4/zookeeper-docker/blob/2373492c6f8e74d3c1167726b19babe8ac7055dd/3.6.2/Dockerfile)  

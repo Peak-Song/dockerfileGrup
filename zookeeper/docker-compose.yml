@@ -8,9 +8,12 @@ services:
     hostname: zoo1
     ports:
       - "21000:2181"
+    networks:
+      zoo:
+        ipv4_address: 172.20.0.101
     environment:
       ZOO_MY_ID: 111
-      ZOO_SERVERS: server.111=zoo1:2888:3888 server.222=zoo2:2888:3888 server.333=zoo3:2888:3888
+      ZOO_SERVERS: server.111=0.0.0.0:2888:3888;2181 server.222=172.20.0.102:2888:3888;2181 server.333=172.20.0.103:2888:3888;2181
       ZOO_TICK_TIME: 2000
       ZOO_INIT_LIMIT: 5
       ZOO_SYNC_LIMIT: 2
@@ -27,9 +30,12 @@ services:
     hostname: zoo2
     ports:
       - "21001:2181"
+    networks:
+      zoo:
+        ipv4_address: 172.20.0.102
     environment:
       ZOO_MY_ID: 222
-      ZOO_SERVERS: server.111=zoo1:2888:3888 server.222=zoo2:2888:3888 server.333=zoo3:2888:3888
+      ZOO_SERVERS: server.111=172.20.0.101:2888:3888;2181 server.222=0.0.0.0:2888:3888;2181 server.333=172.20.0.103:2888:3888;2181
       ZOO_TICK_TIME: 2000
       ZOO_INIT_LIMIT: 5
       ZOO_SYNC_LIMIT: 2
@@ -46,9 +52,12 @@ services:
     hostname: zoo3
     ports:
       - "21002:2181"
+    networks:
+      zoo:
+        ipv4_address: 172.20.0.103
     environment:
       ZOO_MY_ID: 333
-      ZOO_SERVERS: server.111=zoo1:2888:3888 server.222=zoo2:2888:3888 server.333=zoo3:2888:3888
+      ZOO_SERVERS: server.111=172.20.0.101:2888:3888;2181 server.222=172.20.0.102:2888:3888;2181 server.333=0.0.0.0:2888:3888;2181
       ZOO_TICK_TIME: 2000
       ZOO_INIT_LIMIT: 5
       ZOO_SYNC_LIMIT: 2
@@ -56,3 +65,11 @@ services:
     volumes:
       - /D/docker/kafka_cluster/zookeeper/zoo3/data:/data
       - /D/docker/kafka_cluster/zookeeper/zoo3/log:/datalog
+
+networks:
+  zoo:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
