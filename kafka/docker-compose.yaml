@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   kafka0:
-    image: wurstmeister/kafka
+    image: 'bitnami/kafka:2.8.0'
     container_name: kafka0
     ports:
       - 9092:9092
@@ -11,11 +11,10 @@ services:
       - zoo2
       - zoo3
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.175.98
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.175.98:9092
-#      KAFKA_LISTENERS: PLAINTEXT://kafka0:9092
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
+      ALLOW_PLAINTEXT_LISTENER: true
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://192.168.175.98:9092
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+      KAFKA_CFG_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
       KAFKA_BROKER_ID: 0
     volumes:
       - /D/docker/kafka_cluster/kafka/kafka0/data:/data
@@ -25,7 +24,7 @@ services:
         ipv4_address: 172.20.0.10
 
   kafka1:
-    image: wurstmeister/kafka
+    image: 'bitnami/kafka:2.8.0'
     container_name: kafka1
     ports:
       - 9093:9092
@@ -34,11 +33,10 @@ services:
       - zoo2
       - zoo3
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.175.98
-      KAFKA_ADVERTISED_PORT: 9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.175.98:9093
-#      KAFKA_LISTENERS: PLAINTEXT://kafka1:9093
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
+      ALLOW_PLAINTEXT_LISTENER: true
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://192.168.175.98:9093
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9093
+      KAFKA_CFG_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
       KAFKA_BROKER_ID: 1
     volumes:
       - /D/docker/kafka_cluster/kafka/kafka1/data:/data
@@ -48,7 +46,7 @@ services:
         ipv4_address: 172.20.0.11
 
   kafka2:
-    image: wurstmeister/kafka
+    image: 'bitnami/kafka:2.8.0'
     container_name: kafka2
     ports:
       - 9094:9092
@@ -57,11 +55,10 @@ services:
       - zoo2
       - zoo3
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.175.98
-      KAFKA_ADVERTISED_PORT: 9094
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.175.98:9094
-#      KAFKA_LISTENERS: PLAINTEXT://kafka2:9094
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
+      ALLOW_PLAINTEXT_LISTENER: true
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://192.168.175.98:9094
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9094
+      KAFKA_CFG_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
       KAFKA_BROKER_ID: 2
     volumes:
       - /D/docker/kafka_cluster/kafka/kafka2/data:/data
@@ -70,24 +67,27 @@ services:
       zookeeper_zoo:
         ipv4_address: 172.20.0.12
 
-  kafka-manager:
-    image: sheepkiller/kafka-manager:latest
-    restart: unless-stopped
-    container_name: kafka-manager
-    hostname: kafka-manager
+  cmak:
+    image: 'mailbyms/cmak'
+    container_name: cmak
     ports:
       - "9999:9000"
-    links:            # 连接本compose文件创建的container
-      - kafka1
-      - kafka2
-      - kafka0
-    external_links:   # 连接本compose文件以外的container
-      - zoo3
-      - zoo1
-      - zoo2
     environment:
       ZK_HOSTS: "zoo1:2181,zoo2:2181,zoo3:2181"
-      TZ: CST-8
+      KAFKA_MANAGER_AUTH_ENABLED: true
+      KAFKA_MANAGER_USERNAME: admin
+      KAFKA_MANAGER_PASSWORD: Lucky2021
+    links:
+      - kafka0
+      - kafka1
+      - kafka2
+    external_links:
+      - zoo1
+      - zoo2
+      - zoo3
+    healthcheck:
+      test: curl -f http://127.0.0.1:9000/api/health || exit 1
+    restart: unless-stopped
     networks:
       zookeeper_zoo:
         ipv4_address: 172.20.0.99
