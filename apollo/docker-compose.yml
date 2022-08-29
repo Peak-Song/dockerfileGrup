@@ -1,0 +1,61 @@
+# https://github.com/apolloconfig/apollo-quick-start/blob/master/docker-compose.yml
+
+version: '3.1'
+
+services:
+  apollo-admin-service:
+    image: apolloconfig/apollo-adminservice:2.0.1
+    container_name: apollo-admin-service
+
+    ports:
+      - "8990:8090"
+
+    depends_on:
+      - apollo-config-service
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://172.22.0.3:3306/ApolloConfigDB?useSSL=false&&characterEncoding=utf8&&serverTimezone=Asia/Shanghai&&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: 'apollo'
+      SPRING_DATASOURCE_PASSWORD: 'apollo'
+
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.17
+
+  apollo-config-service:
+    image: apolloconfig/apollo-configservice:2.0.1
+    container_name: apollo-config-service
+
+    ports:
+      - "8980:8080"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://172.22.0.3:3306/ApolloConfigDB?useSSL=false&&characterEncoding=utf8&&serverTimezone=Asia/Shanghai&&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: 'apollo'
+      SPRING_DATASOURCE_PASSWORD: 'apollo'
+
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.18
+
+  apollo-portal:
+    image: apolloconfig/apollo-portal:2.0.1
+    container_name: apollo-portal
+
+    ports:
+      - "8970:8070"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://172.22.0.3:3306/ApolloPortalDB?useSSL=false&&characterEncoding=utf8&&serverTimezone=Asia/Shanghai&&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: 'apollo'
+      SPRING_DATASOURCE_PASSWORD: 'apollo'
+#      APOLLO_PORTAL_ENVS: dev
+#      DEV_META: http://172.22.0.17:8090
+
+    networks:
+      mysql_spring:
+        ipv4_address: 172.22.0.19
+
+networks:
+  mysql_spring:
+    external: true

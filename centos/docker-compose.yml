@@ -1,0 +1,10 @@
+version: '2'
+services:
+  centos:
+    build: .
+    ports:
+      - "9990:22"
+    privileged: true
+    container_name: centos8_0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
